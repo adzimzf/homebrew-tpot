@@ -10,7 +10,7 @@ class Tpot < Formula
   on_macos do
     if Hardware::CPU.arm?
       url "http://github.com/adzimzf/tpot/releases/tag/v0.0.3/tpot_0.0.3_macOS_arm64.tar.gz", :using => CurlDownloadStrategy
-      sha256 "116fe7835dc4970ab72111c635fd80eeca6d38410b59dafd525af5d873be9d5b"
+      sha256 "a03bf37548a94860c10892e15406b8fa6cf3586b428ea8c013c97895bdc6b25a"
 
       def install
         bin.install "program"
