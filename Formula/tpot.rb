@@ -20,9 +20,6 @@ class Tpot < Formula
       url "https://github.com/adzimzf/tpot/releases/download/v0.0.3/tpot_0.0.3_macOS_amd64.tar.gz", :using => CurlDownloadStrategy
       sha256 "6d732abf32daa9184844b924e0a0c2ce4ef1dba3cd64f0e876b67754c8304b49"
 
-      def install
-        bin.install "/usr/bin/tpot"
-      end
     end
   end
 
