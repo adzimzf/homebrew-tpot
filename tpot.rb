@@ -10,16 +10,16 @@ class Tpot < Formula
 
   on_macos do
     if Hardware::CPU.arm?
-      url "http://github.com/adzimzf/tpot/releases/v0.0.3/tpot_0.0.3_macOS_arm64.tar.gz", :using => CurlDownloadStrategy.
-      sha256 "fe9a4d48ff751b00d5887cf02fe976ee6caaad45205839d727ab820477e90959"
+      url "http://github.com/adzimzf/tpot/releases/v0.0.3/tpot_0.0.3_macOS_arm64.tar.gz", :using => CurlDownloadStrategy
+      sha256 "3a02e6a6566b9d2acb8fa071a56a888bb865fcbca6ac532604086e0a28f7870a"
 
       def install
         bin.install "program"
       end
     end
     if Hardware::CPU.intel?
-      url "http://github.com/adzimzf/tpot/releases/v0.0.3/tpot_0.0.3_macOS_amd64.tar.gz", :using => CurlDownloadStrategy.
-      sha256 "de14504f239d88a80bd618cd8553cfb9a8b816b34a3fdb227bd67b59fdf5a237"
+      url "http://github.com/adzimzf/tpot/releases/v0.0.3/tpot_0.0.3_macOS_amd64.tar.gz", :using => CurlDownloadStrategy
+      sha256 "b9cf703163fd56aec39a214b803e98b61909b001fa8ce357ee4e7d898724f5d4"
 
       def install
         bin.install "program"
@@ -29,16 +29,16 @@ class Tpot < Formula
 
   on_linux do
     if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      url "http://github.com/adzimzf/tpot/releases/v0.0.3/tpot_0.0.3_linux_arm64.tar.gz", :using => CurlDownloadStrategy.
-      sha256 "1a7c20478fd9ee1f6f30f3501ef312808893387d31153eba03f63b6581f1b8f7"
+      url "http://github.com/adzimzf/tpot/releases/v0.0.3/tpot_0.0.3_linux_arm64.tar.gz", :using => CurlDownloadStrategy
+      sha256 "c0a58c24366b5adc6b5e21be23603b0a6bdff7029de46c6de5f4de3f51a37757"
 
       def install
         bin.install "program"
       end
     end
     if Hardware::CPU.intel?
-      url "http://github.com/adzimzf/tpot/releases/v0.0.3/tpot_0.0.3_linux_amd64.tar.gz", :using => CurlDownloadStrategy.
-      sha256 "cf41b5fd0aa4ab4b100f259335d6c04adf76e36662696307db4927ff38b1b79e"
+      url "http://github.com/adzimzf/tpot/releases/v0.0.3/tpot_0.0.3_linux_amd64.tar.gz", :using => CurlDownloadStrategy
+      sha256 "a23c0b3a4636c3afe3161dd7efb57ee4944150e1d2d07d9fd9c8369e8b008626"
 
       def install
         bin.install "program"
