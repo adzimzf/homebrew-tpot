@@ -13,7 +13,7 @@ class Tpot < Formula
       sha256 "116fe7835dc4970ab72111c635fd80eeca6d38410b59dafd525af5d873be9d5b"
       def install
         bin.install "tpot"
-        zsh_completion.install "completions/tpot.zsh" => "_tpot"
+        # zsh_completion.install "completions/tpot.zsh" => "_tpot"
       end
       
     end
