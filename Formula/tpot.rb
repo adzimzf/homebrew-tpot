@@ -10,7 +10,7 @@ class Tpot < Formula
   on_macos do
     if Hardware::CPU.arm?
       url "https://github.com/adzimzf/tpot/releases/download/v0.0.3/tpot_0.0.3_macOS_arm64.tar.gz", :using => CurlDownloadStrategy
-      sha256 "8dda10734049a129b094b751d5263a69d8af6ba3f907312f1b297f4c3550f2d6"
+      sha256 "116fe7835dc4970ab72111c635fd80eeca6d38410b59dafd525af5d873be9d5b"
 
       def install
         bin.install "program"
@@ -18,7 +18,7 @@ class Tpot < Formula
     end
     if Hardware::CPU.intel?
       url "https://github.com/adzimzf/tpot/releases/download/v0.0.3/tpot_0.0.3_macOS_amd64.tar.gz", :using => CurlDownloadStrategy
-      sha256 "1ee74a8148806eb46cf6514bd8440777618b6e3afdea7ea3da27361e5af7404d"
+      sha256 "6d732abf32daa9184844b924e0a0c2ce4ef1dba3cd64f0e876b67754c8304b49"
 
       def install
         bin.install "program"
@@ -29,7 +29,7 @@ class Tpot < Formula
   on_linux do
     if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
       url "https://github.com/adzimzf/tpot/releases/download/v0.0.3/tpot_0.0.3_linux_arm64.tar.gz", :using => CurlDownloadStrategy
-      sha256 "43c55d23ade0f8a5e69d5502f1f37cbbd666bdc1a198b14e3aacad7daf41c595"
+      sha256 "df1d0ccb6bafead9e9215c0a2d60c83b1f5276dba45489c4b93236432a97330e"
 
       def install
         bin.install "program"
@@ -37,7 +37,7 @@ class Tpot < Formula
     end
     if Hardware::CPU.intel?
       url "https://github.com/adzimzf/tpot/releases/download/v0.0.3/tpot_0.0.3_linux_amd64.tar.gz", :using => CurlDownloadStrategy
-      sha256 "ccf53ab9a2433ccdc9a43cf8b12fbb868f08f5bb965c0d6cce67c960152deea4"
+      sha256 "84a6abfbf21ca7c9670e3df990a490e146aa0f10bdba3dd2d09c70882bd4ae4e"
 
       def install
         bin.install "program"
