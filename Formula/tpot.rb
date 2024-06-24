@@ -5,14 +5,14 @@
 class Tpot < Formula
   desc "tpot is a simple tool to access teleport web UI from terminal"
   homepage "https://github.com/adzimzf/tpot"
-  version "0.0.5"
+  version "0.0.6"
 
   depends_on "zsh" => :optional
 
   on_macos do
     if Hardware::CPU.arm?
-      url "https://github.com/adzimzf/tpot/releases/download/v0.0.5/tpot_0.0.5_macOS_arm64.tar.gz", using: CurlDownloadStrategy
-      sha256 "f82d3dd8f3c56558b81e8e43230783669e999ea9831cc94b79cad9b14306719a"
+      url "https://github.com/adzimzf/tpot/releases/download/v0.0.6/tpot_0.0.6_macOS_arm64.tar.gz", using: CurlDownloadStrategy
+      sha256 "f7349d733a6a431da62ecb4984b866379a7f3ba92569127b7a2b186923c512c5"
 
       def install
         bin.install "bin/tpot"
@@ -20,8 +20,8 @@ class Tpot < Formula
       end
     end
     if Hardware::CPU.intel?
-      url "https://github.com/adzimzf/tpot/releases/download/v0.0.5/tpot_0.0.5_macOS_amd64.tar.gz", using: CurlDownloadStrategy
-      sha256 "fbbefd13ff33f6792c1ace323376828d9b1224163a6d84e86bdc0cf669a6f8a8"
+      url "https://github.com/adzimzf/tpot/releases/download/v0.0.6/tpot_0.0.6_macOS_amd64.tar.gz", using: CurlDownloadStrategy
+      sha256 "6c6c8cac7504afb02f8b5a4a05e7ac67b7a81c3a565e8e482aed262a85b4be40"
 
       def install
         bin.install "bin/tpot"
@@ -32,8 +32,8 @@ class Tpot < Formula
 
   on_linux do
     if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      url "https://github.com/adzimzf/tpot/releases/download/v0.0.5/tpot_0.0.5_linux_arm64.tar.gz", using: CurlDownloadStrategy
-      sha256 "ca94f66249a4ca85dc3f4b92d12277531b09c0844c090df5d60b811ed96b0a56"
+      url "https://github.com/adzimzf/tpot/releases/download/v0.0.6/tpot_0.0.6_linux_arm64.tar.gz", using: CurlDownloadStrategy
+      sha256 "da2de7ab8313b2fdcd8ffc9198109dcd1b2a5f0b2c0a44e8941cd5df7ed9cd26"
 
       def install
         bin.install "bin/tpot"
@@ -41,8 +41,8 @@ class Tpot < Formula
       end
     end
     if Hardware::CPU.intel?
-      url "https://github.com/adzimzf/tpot/releases/download/v0.0.5/tpot_0.0.5_linux_amd64.tar.gz", using: CurlDownloadStrategy
-      sha256 "40dc87182bccf59b5c05bc656b13fabc4add30efcc02c6220c1e7f89738debfa"
+      url "https://github.com/adzimzf/tpot/releases/download/v0.0.6/tpot_0.0.6_linux_amd64.tar.gz", using: CurlDownloadStrategy
+      sha256 "f5e454d53284b7b4a6c9bd402dfa4ede25cadbd5ccff789bbba370c20b716abd"
 
       def install
         bin.install "bin/tpot"
