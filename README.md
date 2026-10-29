@@ -3,7 +3,7 @@ A home brew tap/formula for the tpot
 
 ## a-test
 
-A test formula: a tiny Go CLI (`a-test/`) that prints `install succeed`. It installs from a bottle where one exists, or builds from source with Go.
+A test formula: a tiny Go CLI (`a-test/`) that prints `install succeed` (and its version with `a-test --version`). It installs from a bottle where one exists, or builds from source with Go.
 Intel Macs get no bottle: Homebrew stopped supporting them in September 2026.
 
 ```bash

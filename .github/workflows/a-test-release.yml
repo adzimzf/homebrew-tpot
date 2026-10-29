@@ -155,6 +155,7 @@ jobs:
           brew install "$FORMULA" 2>&1 | tee install.log
           grep -q "Pouring a-test--${VERSION}" install.log
           a-test | grep -Fx "install succeed"
+          a-test --version | grep -Fx "$VERSION"
           brew uninstall "$FORMULA"
 
       - name: Install from source
@@ -163,3 +164,4 @@ jobs:
           brew install --build-from-source "$FORMULA"
           brew test "$FORMULA"
           a-test | grep -Fx "install succeed"
+          a-test --version | grep -Fx "$VERSION"
