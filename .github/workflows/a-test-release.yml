@@ -173,3 +173,11 @@ jobs:
           brew test "$FORMULA"
           a-test | grep -Fx "install succeed"
           a-test --version | grep -Fx "$VERSION"
+          brew uninstall "$FORMULA"
+
+      - name: Install from source with --with-color
+        run: |
+          set -euo pipefail
+          brew install --with-color "$FORMULA"
+          brew test "$FORMULA"
+          a-test | grep -Fx $'\e[32minstall succeed\e[0m'
