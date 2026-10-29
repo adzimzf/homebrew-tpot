@@ -32,28 +32,32 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Make the source tarball
+      # A re-run for a version that already has a release reuses its
+      # tarball, so the formula's checksum keeps matching.
+      - name: Make the source tarball and release
         id: tarball
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "bad version: $VERSION" >&2; exit 1; }
           tarball="a-test-${VERSION}.tar.gz"
-          git archive --format=tar --prefix="a-test-${VERSION}/" HEAD:a-test | gzip -n > "$tarball"
+          if gh release view "$TAG" > /dev/null 2>&1; then
+            echo "Release $TAG exists; reusing its tarball"
+            gh release download "$TAG" --pattern "$tarball"
+          else
+            git archive --format=tar --prefix="a-test-${VERSION}/" HEAD:a-test | gzip -n > "$tarball"
+            gh release create "$TAG" "$tarball" \
+              --target "$GITHUB_SHA" --title "a-test $VERSION" --notes "a-test $VERSION"
+          fi
           echo "sha256=$(sha256sum "$tarball" | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
-
-      - name: Create the release
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh release create "$TAG" "a-test-${VERSION}.tar.gz" \
-            --target "$GITHUB_SHA" --title "a-test $VERSION" --notes "a-test $VERSION"
 
   bottle:
     needs: source
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-15, macos-15-intel, ubuntu-24.04, ubuntu-24.04-arm]
+        os: [macos-15, ubuntu-24.04, ubuntu-24.04-arm]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -105,7 +109,7 @@ jobs:
       - name: Upload bottles to the release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release upload "$TAG" bottles/*.tar.gz --repo "$GITHUB_REPOSITORY"
+        run: gh release upload "$TAG" bottles/*.tar.gz --clobber --repo "$GITHUB_REPOSITORY"
 
       - name: Write the bottle block
         run: |
@@ -135,7 +139,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-15, macos-15-intel, ubuntu-24.04, ubuntu-24.04-arm]
+        os: [macos-15, ubuntu-24.04, ubuntu-24.04-arm]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
