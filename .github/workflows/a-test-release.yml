@@ -1,0 +1,161 @@
+name: a-test release
+
+# Releases a-test: makes the source tarball and a GitHub release for it,
+# builds bottles on macOS and Linux, writes them into Formula/a-test.rb and
+# pushes that to the branch this ran from, then checks that the formula
+# installs both from a bottle and from source.
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to release, e.g. 0.1.0"
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: a-test-release
+  cancel-in-progress: false
+
+env:
+  VERSION: ${{ inputs.version }}
+  TAG: a-test-v${{ inputs.version }}
+  FORMULA: adzimzf/tpot/a-test
+
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    outputs:
+      sha256: ${{ steps.tarball.outputs.sha256 }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Make the source tarball
+        id: tarball
+        run: |
+          set -euo pipefail
+          [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "bad version: $VERSION" >&2; exit 1; }
+          tarball="a-test-${VERSION}.tar.gz"
+          git archive --format=tar --prefix="a-test-${VERSION}/" HEAD:a-test | gzip -n > "$tarball"
+          echo "sha256=$(sha256sum "$tarball" | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
+
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$TAG" "a-test-${VERSION}.tar.gz" \
+            --target "$GITHUB_SHA" --title "a-test $VERSION" --notes "a-test $VERSION"
+
+  bottle:
+    needs: source
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-15, macos-15-intel, ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      # Before updating the formula: setup-homebrew resets the tap's working
+      # tree, which would throw the update away.
+      - name: Set up Homebrew
+        uses: Homebrew/actions/setup-homebrew@main
+
+      - name: Update formula
+        run: bin/update-a-test "$VERSION" "${{ needs.source.outputs.sha256 }}"
+
+      - name: Build bottle
+        run: |
+          set -euo pipefail
+          brew install --build-bottle "$FORMULA"
+          brew test "$FORMULA"
+          mkdir bottles && cd bottles
+          brew bottle --json --root-url="https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}" "$FORMULA"
+          # brew bottle writes name--version files; the download URL uses
+          # the single-dash name in the JSON.
+          jq -r '.[].bottle.tags[] | "\(.local_filename) \(.filename)"' ./*.json | while read -r local remote; do
+            mv "$local" "$remote"
+          done
+          ls -l
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bottle-${{ matrix.os }}
+          path: bottles/*
+
+  publish:
+    needs: [source, bottle]
+    runs-on: ubuntu-latest
+    outputs:
+      sha: ${{ steps.commit.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Homebrew
+        uses: Homebrew/actions/setup-homebrew@main
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: bottle-*
+          path: bottles
+          merge-multiple: true
+
+      - name: Upload bottles to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "$TAG" bottles/*.tar.gz --repo "$GITHUB_REPOSITORY"
+
+      - name: Write the bottle block
+        run: |
+          set -euo pipefail
+          bin/update-a-test "$VERSION" "${{ needs.source.outputs.sha256 }}"
+          brew bottle --merge --write --no-commit bottles/*.json
+          cat Formula/a-test.rb
+
+      # setup-homebrew rebuilds the tap's git setup, dropping the branch's
+      # upstream and the credentials actions/checkout configured, so push
+      # with the token directly.
+      - name: Commit
+        id: commit
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Formula/a-test.rb
+          git commit -m "a-test $VERSION"
+          git push "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "HEAD:${GITHUB_REF_NAME}"
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+  verify:
+    needs: publish
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-15, macos-15-intel, ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.publish.outputs.sha }}
+
+      - name: Set up Homebrew
+        uses: Homebrew/actions/setup-homebrew@main
+
+      - name: Install from bottle
+        run: |
+          set -euo pipefail
+          brew install "$FORMULA" 2>&1 | tee install.log
+          grep -q "Pouring a-test--${VERSION}" install.log
+          a-test | grep -Fx "install succeed"
+          brew uninstall "$FORMULA"
+
+      - name: Install from source
+        run: |
+          set -euo pipefail
+          brew install --build-from-source "$FORMULA"
+          brew test "$FORMULA"
+          a-test | grep -Fx "install succeed"

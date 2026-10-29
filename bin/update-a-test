@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# Regenerate Formula/a-test.rb for an a-test release, without a bottle block
+# (the release workflow adds it with `brew bottle --merge --write`).
+# Usage: bin/update-a-test <version> <sha256 of the source tarball>
+set -euo pipefail
+
+version="${1:?usage: bin/update-a-test <version> <sha256>}"
+sha256="${2:?usage: bin/update-a-test <version> <sha256>}"
+version="${version#v}"
+[[ "$sha256" =~ ^[0-9a-f]{64}$ ]] || { echo "error: bad sha256: $sha256" >&2; exit 1; }
+
+formula="$(dirname "$0")/../Formula/a-test.rb"
+
+cat > "$formula" <<EOF
+class ATest < Formula
+  desc "Test CLI that prints install succeed"
+  homepage "https://github.com/adzimzf/homebrew-tpot"
+  url "https://github.com/adzimzf/homebrew-tpot/releases/download/a-test-v${version}/a-test-${version}.tar.gz"
+  sha256 "${sha256}"
+  license "MIT"
+
+  depends_on "go" => :build
+
+  def install
+    system "go", "build", *std_go_args(ldflags: "-s -w")
+  end
+
+  test do
+    assert_equal "install succeed", shell_output("#{bin}/a-test").strip
+  end
+end
+EOF
+echo "wrote $formula for ${version}"
