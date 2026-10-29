@@ -149,6 +149,14 @@ jobs:
       - name: Set up Homebrew
         uses: Homebrew/actions/setup-homebrew@main
 
+      # setup-homebrew resets the tap to the commit the run started from;
+      # test the formula publish pushed instead.
+      - name: Check out the published formula
+        run: |
+          git fetch origin "${{ needs.publish.outputs.sha }}"
+          git checkout --detach "${{ needs.publish.outputs.sha }}"
+          grep -F "a-test-${VERSION}.tar.gz" Formula/a-test.rb
+
       - name: Install from bottle
         run: |
           set -euo pipefail
