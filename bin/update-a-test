@@ -16,6 +16,9 @@ class ATest < Formula
   desc "Test CLI that prints install succeed"
   homepage "https://github.com/adzimzf/homebrew-tpot"
   url "https://github.com/adzimzf/homebrew-tpot/releases/download/a-test-v${version}/a-test-${version}.tar.gz"
+  # Explicit: zerobrew reads the version from a version line or from the URL,
+  # and can't parse it from the a-test-v<version> tag.
+  version "${version}"
   sha256 "${sha256}"
   license "MIT"
 
