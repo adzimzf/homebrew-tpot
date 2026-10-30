@@ -161,7 +161,7 @@ jobs:
         run: |
           set -euo pipefail
           brew install "$FORMULA" 2>&1 | tee install.log
-          grep -q "Pouring a-test--${VERSION}" install.log
+          grep -Eq "Pouring a-test--?${VERSION}\." install.log
           a-test | grep -Fx "install succeed"
           a-test --version | grep -Fx "$VERSION"
           brew uninstall "$FORMULA"
