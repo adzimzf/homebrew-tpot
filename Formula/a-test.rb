@@ -2,15 +2,17 @@ class ATest < Formula
   desc "Test CLI that prints install succeed"
   homepage "https://github.com/adzimzf/homebrew-tpot"
   url "https://github.com/adzimzf/homebrew-tpot/releases/download/a-test-v0.2.0/a-test-0.2.0.tar.gz"
+  # Explicit: zerobrew reads the version from a version line or from the URL,
+  # and can't parse it from the a-test-v<version> tag.
+  version "0.2.0"
   sha256 "8b1af2223d8d509d39dd6a2e3a2d64ad225d0a711bda61e48bbc43a353e175cd"
   license "MIT"
 
   bottle do
     root_url "https://github.com/adzimzf/homebrew-tpot/releases/download/a-test-v0.2.0"
-    rebuild 1
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "1b587dba0179c7da0c46848c33a612620eb2722cf16207613bfe8b0b3a31bd18"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "21817a2871b3cfe42681dcd979baf15850e3ce21785ceefb13734078b8eb1d0f"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "3cf887849e65c47e957b88a6d5f29d2b2f0b7727c1a96f29a0b965c177ffa736"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "74b611aa1eb2ae2af7b80d3c2a9bb29e33921b3ebfdf137ea46ead123c21adef"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "21afb403ebe9d922d06ffbc8bf74146ed7724666dbdeca23fb34ddf39ad4de92"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "aed0a7930efd81e73a805aee1173b8875bb39839e21ef6553c3ea2ba5c8e7ce3"
   end
 
   option "with-color", "Print the message in color"
