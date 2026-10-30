@@ -149,12 +149,21 @@ jobs:
       - name: Set up Homebrew
         uses: Homebrew/actions/setup-homebrew@main
 
+      # setup-homebrew resets the tap to the commit the run started from;
+      # test the formula publish pushed instead.
+      - name: Check out the published formula
+        run: |
+          git fetch origin "${{ needs.publish.outputs.sha }}"
+          git checkout --detach "${{ needs.publish.outputs.sha }}"
+          grep -F "a-test-${VERSION}.tar.gz" Formula/a-test.rb
+
       - name: Install from bottle
         run: |
           set -euo pipefail
           brew install "$FORMULA" 2>&1 | tee install.log
           grep -q "Pouring a-test--${VERSION}" install.log
           a-test | grep -Fx "install succeed"
+          a-test --version | grep -Fx "$VERSION"
           brew uninstall "$FORMULA"
 
       - name: Install from source
@@ -163,3 +172,12 @@ jobs:
           brew install --build-from-source "$FORMULA"
           brew test "$FORMULA"
           a-test | grep -Fx "install succeed"
+          a-test --version | grep -Fx "$VERSION"
+          brew uninstall "$FORMULA"
+
+      - name: Install from source with --with-color
+        run: |
+          set -euo pipefail
+          brew install --with-color "$FORMULA"
+          brew test "$FORMULA"
+          a-test | grep -Fx $'\e[32minstall succeed\e[0m'

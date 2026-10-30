@@ -19,14 +19,21 @@ class ATest < Formula
   sha256 "${sha256}"
   license "MIT"
 
+  option "with-color", "Print the message in color"
+
   depends_on "go" => :build
 
   def install
-    system "go", "build", "-o", bin/"a-test", "."
+    tags = build.with?("color") ? ["-tags", "color"] : []
+    cd "cmd/a-test" do
+      system "go", "build", *tags, "-ldflags", "-X main.version=#{version}", "-o", bin/"a-test", "."
+    end
   end
 
   test do
-    assert_equal "install succeed", shell_output("#{bin}/a-test").strip
+    message = build.with?("color") ? "\e[32minstall succeed\e[0m" : "install succeed"
+    assert_equal message, shell_output("#{bin}/a-test").strip
+    assert_equal version.to_s, shell_output("#{bin}/a-test --version").strip
   end
 end
 EOF
