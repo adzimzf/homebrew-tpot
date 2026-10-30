@@ -76,7 +76,10 @@ jobs:
           brew install --build-bottle "$FORMULA"
           brew test "$FORMULA"
           mkdir bottles && cd bottles
-          brew bottle --json --root-url="https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}" "$FORMULA"
+          # --no-rebuild: each version is its own release, and zerobrew builds
+          # the wrong file name for rebuilt bottles (name-1.0.1.tag.bottle.tar.gz
+          # instead of name-1.0.tag.bottle.1.tar.gz).
+          brew bottle --json --no-rebuild --root-url="https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}" "$FORMULA"
           # brew bottle writes name--version files; the download URL uses
           # the single-dash name in the JSON.
           jq -r '.[].bottle.tags[] | "\(.local_filename) \(.filename)"' ./*.json | while read -r local remote; do
