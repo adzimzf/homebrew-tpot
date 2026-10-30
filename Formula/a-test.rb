@@ -7,9 +7,10 @@ class ATest < Formula
 
   bottle do
     root_url "https://github.com/adzimzf/homebrew-tpot/releases/download/a-test-v0.2.0"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "9124bce3b4ba7e562034414074d73b27d8823c97d368c97290fa5014dd2724de"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "8d5a2781cf8730e23c9a49db138abadda7b5f4aa41c4c7a819c63ab84ca72493"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "b6f128a3b704ccac0ca49aa238f4acc6b02188f0e9b3bc11e51f0da0edfcd49d"
+    rebuild 1
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "1b587dba0179c7da0c46848c33a612620eb2722cf16207613bfe8b0b3a31bd18"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "21817a2871b3cfe42681dcd979baf15850e3ce21785ceefb13734078b8eb1d0f"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "3cf887849e65c47e957b88a6d5f29d2b2f0b7727c1a96f29a0b965c177ffa736"
   end
 
   option "with-color", "Print the message in color"
